@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>7G Connectivity Dashboard</title>
+<style>
+  /* Reset and basics */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #121212;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #0f62fe;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  main {
+    flex: 1;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .card {
+    background: #1e1e1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(15, 98, 254, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: #0f62fe;
+  }
+
+  .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .unit {
+    font-size: 1.2rem;
+    color: #888;
+  }
+
+  .progress-bar {
+    width: 100%;
+    background: #333;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 20px;
+    margin-top: 1rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #0f62fe;
+    width: 0;
+    border-radius: 12px 0 0 12px;
+    transition: width 1s ease;
+  }
+
+  .status {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    color: #fff;
+  }
+
+  .status.connected {
+    background-color: #00c853;
+  }
+
+  .status.disconnected {
+    background-color: #d32f2f;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1rem;
+    background: #0f62fe;
+    color: #fff;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<header>7G Connectivity Dashboard</header>
+
+<main>
+  <section class="card">
+    <h2>Signal Strength</h2>
+    <div class="value" id="signalValue">0</div>
+    <div class="unit">dBm</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="signalBar"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Download Speed</h2>
+    <div class="value" id="downloadSpeed">0</div>
+    <div class="unit">Gbps</div>
+  </section>
+
+  <section class="card">
+    <h2>Upload Speed</h2>
+    <div class="value" id="uploadSpeed">0</div>
+    <div class="unit">Gbps</div>
+  </section>
+
+  <section class="card">
+    <h2>Latency</h2>
+    <div class="value" id="latency">0</div>
+    <div class="unit">ms</div>
+  </section>
+
+  <section class="card">
+    <h2>Connected Devices</h2>
+    <div class="value" id="devices">0</div>
+    <div class="unit">Devices</div>
+  </section>
+
+  <section class="card">
+    <h2>Connection Status</h2>
+    <div id="connectionStatus" class="status disconnected">Disconnected</div>
+  </section>
+</main>
+
+<footer>© 2025 7G Networks</footer>
+
+<script>
+  // Simulate real-time data updates
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateDashboard() {
+    // Signal strength dBm: usually from -120 (weak) to -50 (strong)
+    const signalStrength = getRandomInt(-110, -55);
+    document.getElementById('signalValue').textContent = signalStrength;
+    // Map signal strength to 0-100% progress bar
+    const signalPercent = Math.min(Math.max((signalStrength + 120) * 100 / 70, 0), 100);
+    document.getElementById('signalBar').style.width = signalPercent + '%';
+
+    // Download speed in Gbps, simulate 0.1 to 10 Gbps
+    const downloadSpeed = (Math.random() * 9.9 + 0.1).toFixed(2);
+    document.getElementById('downloadSpeed').textContent = downloadSpeed;
+
+    // Upload speed in Gbps, simulate 0.05 to 5 Gbps
+    const uploadSpeed = (Math.random() * 4.95 + 0.05).toFixed(2);
+    document.getElementById('uploadSpeed').textContent = uploadSpeed;
+
+    // Latency in ms, simulate 1 to 30 ms
+    const latency = getRandomInt(1, 30);
+    document.getElementById('latency').textContent = latency;
+
+    // Connected devices, simulate 1 to 50
+    const devices = getRandomInt(1, 50);
+    document.getElementById('devices').textContent = devices;
+
+    // Connection status based on signal strength and latency
+    const statusElem = document.getElementById('connectionStatus');
+    if(signalStrength > -80 && latency < 20) {
+      statusElem.textContent = 'Connected';
+      statusElem.classList.remove('disconnected');
+      statusElem.classList.add('connected');
+    } else {
+      statusElem.textContent = 'Disconnected';
+      statusElem.classList.remove('connected');
+      statusElem.classList.add('disconnected');
+    }
+  }
+
+  // Update dashboard every 3 seconds
+  updateDashboard();
+  setInterval(updateDashboard, 3000);
+</script>
+
+</body>
+</html>
